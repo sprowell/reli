@@ -54,19 +54,19 @@ fn main() {
     let fact = TermFactory::new();
     let eli = EliWriter::new();
     let t = fact.get_root();
-    println!("{}\n    {:?}", t, t);
+    println!("{}", t);
     let u = fact.new_string(Locus::Internal, "Mister \nPickles".to_string());
-    println!("{}\n    {:?}", u, u);
+    println!("{}", u);
     let v = fact.new_variable(Locus::Internal, &fact.get_any(), "viv\0ian".to_string(),
         &fact.new_boolean(true));
-    println!("{}\n    {:?}", v, v);
+    println!("{}", v);
     let m = fact.new_static_map(Locus::Internal, &v, &u);
-    println!("{}\n    {:?}", m, m);
+    println!("{}", m);
     let p = fact.new_static_product(Locus::Internal, &fact.get_string(), &fact.get_symbol());
-    println!("{}\n    {:?}", p, p);
+    println!("{}", p);
     let l = fact.new_lambda(Locus::Internal, &v, &m, &fact.new_boolean(true));
-    println!("{}\n    {:?}", l, l);
-    println!("{}\n    {:?}", fact.get_type(&l), fact.get_type(&l));
+    println!("{}", l);
+    println!("{}", fact.get_type(&l));
     println!("");
 
     // Now print using the ELI formatter.

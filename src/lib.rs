@@ -25,11 +25,9 @@
 #![warn(missing_docs)]
 
 // Use a crate for defining single-initialization complex static data.
-#[macro_use]
 extern crate lazy_static;
 
 // Use a crate for arbitrary precision integers.
-#[macro_use]
 extern crate num;
 
 // Modules (namespaces) provided by this library are all defined here.
