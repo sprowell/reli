@@ -19,9 +19,11 @@
 
 // Tell the documentation system about some icons and require
 // documentation.
-#![doc(html_logo_url = "https://raw.githubusercontent.com/relision/things/master/graphics/relision.png",
-	html_favicon_url = "https://raw.githubusercontent.com/relision/things/master/graphics/favicon.ico",
-	html_root_url = "https://github.com/relision")]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/relision/things/master/graphics/relision.png",
+    html_favicon_url = "https://raw.githubusercontent.com/relision/things/master/graphics/favicon.ico",
+    html_root_url = "https://github.com/relision"
+)]
 #![warn(missing_docs)]
 
 // Use a crate for defining single-initialization complex static data.
@@ -31,8 +33,8 @@ extern crate lazy_static;
 extern crate num;
 
 // Modules (namespaces) provided by this library are all defined here.
-pub mod util;			// Generic utility functions.
-pub mod prelude;		// Common definitions for programs that want to use relision.
-pub mod platform;		// Platform-specific functions and definitions.
-pub mod repl;			// Implementation of the REPL for relision.
-pub mod terms;			// Implementation of terms.
+pub mod platform; // Platform-specific functions and definitions.
+pub mod prelude;  // Common definitions for programs that want to use relision.
+pub mod repl;     // Implementation of the REPL for relision.
+pub mod terms;
+pub mod util; // Generic utility functions. // Implementation of terms.

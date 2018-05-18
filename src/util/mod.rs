@@ -53,12 +53,27 @@ pub fn escape(input: &String, border: char) -> (String, bool) {
             continue;
         }
         match ch {
-            '\0' => { output.push_str("\\0"); fixed = true },
-            '\t' => { output.push_str("\\t"); fixed = true },
-            '\n' => { output.push_str("\\n"); fixed = true },
-            '\r' => { output.push_str("\\r"); fixed = true },
-            '\\' => { output.push_str("\\\\"); fixed = true },
-            _ => output.push(ch)
+            '\0' => {
+                output.push_str("\\0");
+                fixed = true
+            }
+            '\t' => {
+                output.push_str("\\t");
+                fixed = true
+            }
+            '\n' => {
+                output.push_str("\\n");
+                fixed = true
+            }
+            '\r' => {
+                output.push_str("\\r");
+                fixed = true
+            }
+            '\\' => {
+                output.push_str("\\\\");
+                fixed = true
+            }
+            _ => output.push(ch),
         };
     }
     (output, fixed)

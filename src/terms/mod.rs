@@ -26,17 +26,17 @@ term must be wrapped in an Arc.  Thus Arc<Term> is the way terms are returned.  
 "clone" is passed (really the ref count is just bumped).
 */
 
-mod terms;          // The different kinds of terms.
-mod termfactory;    // Constructing terms.
-mod util;           // Utilities for working with terms.
-mod eli_writer;     // Write terms in ELI format.
-mod universe;       // The term universe.
-mod locus;          // The locus.
+mod eli_writer; // Write terms in ELI format.
+mod locus;
+mod termfactory; // Constructing terms.
+mod terms;       // The different kinds of terms.
+mod universe;    // The term universe.
+mod util;        // Utilities for working with terms. // The locus.
 
 // Expose the important stuff directly through this module to simplify the
 // interface.
-pub use self::locus::Locus;
-pub use self::terms::Term;
-pub use self::termfactory::TermFactory;
-pub use self::util::TermWriter;
 pub use self::eli_writer::EliWriter;
+pub use self::locus::Locus;
+pub use self::termfactory::TermFactory;
+pub use self::terms::Term;
+pub use self::util::TermWriter;

@@ -17,9 +17,9 @@
 //! that is part of this distribution.  This file may not be copied,
 //! modified, or distributed except according to those terms.
 
+extern crate getopts;
 extern crate linenoise;
 extern crate num;
-extern crate getopts;
 
 /// The return result from a callback.  Errors are returned as a string in an `Err` result, while
 /// success is indicated by `Ok("".to_owned())`.
@@ -42,37 +42,99 @@ pub struct ColonCommand {
 /// executes the command.
 pub fn define_commands() -> Vec<ColonCommand> {
     // TODO This should really be a map.  Need to change that at some point.
-    vec![ColonCommand {
-             name: "clear",
-             action: Box::new(|_| -> CallbackResult {
-                 linenoise::clear_screen();
-                 Ok("".to_string())
-             }),
-         },
-         ColonCommand {
-             name: "history",
-             action: Box::new(|_| -> CallbackResult {
-                 let mut index = 0;
-                 loop {
-                     match linenoise::history_line(index) {
-                         None => {
-                             break;
-                         }
-                         Some(line) => {
-                             println!("{}: {}", index, line);
-                         }
-                     };
-                     index = index + 1;
-                 }
-                 Ok("".to_string())
-             }),
-         },
-         ColonCommand {
-             // This command is special.  It is trapped by the main loop and
-             // causes the REPL to terminate.
-             name: "quit",
-             action: Box::new(|_| -> CallbackResult { Ok("".to_string()) }),
-         }]
+    vec![
+        ColonCommand {
+            name: "clear",
+            action: Box::new(|_| -> CallbackResult {
+                linenoise::clear_screen();
+                Ok("".to_string())
+            }),
+        },
+        ColonCommand {
+            name: "history",
+            action: Box::new(|_| -> CallbackResult {
+                let mut index = 0;
+                loop {
+                    match linenoise::history_line(index) {
+                        None => {
+                            break;
+                        }
+                        Some(line) => {
+                            println!("{}: {}", index, line);
+                        }
+                    };
+                    index = index + 1;
+                }
+                Ok("".to_string())
+            }),
+        },
+        ColonCommand {
+            // Write out some test terms.
+            name: "test",
+            action: Box::new(|_| -> CallbackResult {
+                // Go and get the locus stuff.
+                use terms::Locus;
+                let locus1 = Locus::Internal;
+                let locus2 = Locus::Console(9, 21);
+                let locus3 = Locus::File("brenda.eli".to_string(), 9, 21);
+                let locus4 = Locus::File("brenda.eli".to_string(), 9, 21);
+                println!(
+                    "locus1: {}\nlocus2: {}\nlocus3: {}\nlocus4: {}\n",
+                    locus1, locus2, locus3, locus4
+                );
+                println!("{} == {} -> {}", locus3, locus4, locus3 == locus4);
+                println!("{} == {} -> {}", locus2, locus3, locus2 == locus3);
+
+                // use std::sync::Arc;
+                // use relision::terms::Term;
+                use terms::TermFactory;
+                use terms::{EliWriter, TermWriter};
+                let fact = TermFactory::new();
+                let eli = EliWriter::new();
+                let t = fact.get_root();
+                println!("{}", t);
+                let u = fact.new_string(Locus::Internal, "Mister \nPickles".to_string());
+                println!("{}", u);
+                let v = fact.new_variable(
+                    Locus::Internal,
+                    &fact.get_any(),
+                    "viv\0ian".to_string(),
+                    &fact.new_boolean(true),
+                );
+                println!("{}", v);
+                let m = fact.new_static_map(Locus::Internal, &v, &u);
+                println!("{}", m);
+                let p = fact.new_static_product(
+                    Locus::Internal,
+                    &fact.get_string(),
+                    &fact.get_symbol(),
+                );
+                println!("{}", p);
+                let l = fact.new_lambda(Locus::Internal, &v, &m, &fact.new_boolean(true));
+                println!("{}", l);
+                println!("{}", fact.get_type(&l));
+                println!("");
+
+                // Now print using the ELI formatter.
+                let testy = fact.new_string(
+                    Locus::Internal,
+                    "|\u{a}\u{d}|\0|\t|\n|\r|\"|\'|?|\\|`|".to_string(),
+                );
+                eli.println(&fact, &u);
+                eli.println(&fact, &testy);
+                eli.println(&fact, &l);
+
+                // All is well.
+                Ok("".to_string())
+            }),
+        },
+        ColonCommand {
+            // This command is special.  It is trapped by the main loop and
+            // causes the REPL to terminate.
+            name: "quit",
+            action: Box::new(|_| -> CallbackResult { Ok("".to_string()) }),
+        },
+    ]
 }
 
 /// Create a REPL backed by a history file.  Prior history is read at start, and then saved at the
@@ -127,11 +189,11 @@ pub fn repl(commands: Vec<ColonCommand>) {
                                     found = true;
                                 }
                                 Some(other) => {
-                                    println!("ERROR: The command :{} is ambiguous.  It might be \
-                                              :{} or :{}.",
-                                             command,
-                                             cmd.name,
-                                             other.name);
+                                    println!(
+                                        "ERROR: The command :{} is ambiguous.  It might be \
+                                         :{} or :{}.",
+                                        command, cmd.name, other.name
+                                    );
                                     break;
                                 }
                             }
@@ -179,14 +241,18 @@ pub fn repl(commands: Vec<ColonCommand>) {
 
 /// Print the banner for the project.
 pub fn banner() {
-    println!(r#"
+    println!(
+        r#"
           _ _     _
  _ __ ___| (_)___(_) ___  _ __
 | '__/ _ \ | / __| |/ _ \| '_ \
 | | |  __/ | \__ \ | (_) | | | |
 |_|  \___|_|_|___/_|\___/|_| |_|
 The relision term rewriting library.
-"#);
-    println!("Version: {:?}",
-             option_env!("CARGO_PKG_VERSION").unwrap_or("unspecified"));
+"#
+    );
+    println!(
+        "Version: {:?}",
+        option_env!("CARGO_PKG_VERSION").unwrap_or("unspecified")
+    );
 }

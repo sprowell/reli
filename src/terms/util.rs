@@ -17,10 +17,10 @@
 //! that is part of this distribution.  This file may not be copied,
 //! modified, or distributed except according to those terms.
 
+use super::termfactory::TermFactory;
+use super::terms::*;
 use std::io;
 use std::sync::Arc;
-use super::terms::*;
-use super::termfactory::TermFactory;
 
 /// Write a term.
 pub trait TermWriter {

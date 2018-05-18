@@ -45,7 +45,7 @@ pub enum Term {
         /// The type.
         typ: Arc<Term>,
         /// The value.
-        value: String
+        value: String,
     },
 
     /// Define the Boolean literal term.
@@ -101,7 +101,6 @@ pub enum Term {
         /// The lambda guard.
         guard: Arc<Term>,
     },
-
 }
 
 impl Term {
@@ -123,8 +122,12 @@ impl fmt::Display for Term {
     fn fmt(&self, form: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Term::Root => write!(form, "^ROOT"),
-            Term::SymbolLiteral { ref locus, ref typ, ref value } => {
-                let (escaped,fixed) = escape(value, '`');
+            Term::SymbolLiteral {
+                ref locus,
+                ref typ,
+                ref value,
+            } => {
+                let (escaped, fixed) = escape(value, '`');
                 if fixed {
                     try!(write!(form, "`{}`", escaped));
                 } else {
@@ -134,18 +137,31 @@ impl fmt::Display for Term {
                     try!(write!(form, ": {}", typ));
                 }
                 with_locus(form, locus)
-            },
-            Term::StringLiteral { ref locus, ref typ, ref value } => {
-                let (escaped,_) = escape(value, '"');
+            }
+            Term::StringLiteral {
+                ref locus,
+                ref typ,
+                ref value,
+            } => {
+                let (escaped, _) = escape(value, '"');
                 try!(write!(form, "\"{}\": {}", escaped, typ));
                 with_locus(form, locus)
-            },
-            Term::BooleanLiteral { ref locus, ref typ, ref value } => {
+            }
+            Term::BooleanLiteral {
+                ref locus,
+                ref typ,
+                ref value,
+            } => {
                 try!(write!(form, "{:?}: {}", value, typ));
                 with_locus(form, locus)
-            },
-            Term::Variable { ref locus, ref typ, ref name, ref guard } => {
-                let (escaped,fixed) = escape(name, '`');
+            }
+            Term::Variable {
+                ref locus,
+                ref typ,
+                ref name,
+                ref guard,
+            } => {
+                let (escaped, fixed) = escape(name, '`');
                 if fixed {
                     try!(write!(form, "$`{}`", escaped));
                 } else {
@@ -153,19 +169,32 @@ impl fmt::Display for Term {
                 }
                 try!(write!(form, "{{{}}}: {}", guard, typ));
                 with_locus(form, locus)
-            },
-            Term::StaticMap { ref locus, ref domain, ref codomain } => {
+            }
+            Term::StaticMap {
+                ref locus,
+                ref domain,
+                ref codomain,
+            } => {
                 try!(write!(form, "{} => {}", domain, codomain));
                 with_locus(form, locus)
-            },
-            Term::StaticProduct { ref locus, ref lhs, ref rhs } => {
+            }
+            Term::StaticProduct {
+                ref locus,
+                ref lhs,
+                ref rhs,
+            } => {
                 try!(write!(form, "{} * {}", lhs, rhs));
                 with_locus(form, locus)
-            },
-            Term::Lambda { ref locus, ref param, ref body, ref guard } => {
+            }
+            Term::Lambda {
+                ref locus,
+                ref param,
+                ref body,
+                ref guard,
+            } => {
                 try!(write!(form, "{} ->{{{}}} {}", param, guard, body));
                 with_locus(form, locus)
-            },
+            }
         }
     }
 }

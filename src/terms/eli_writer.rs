@@ -20,9 +20,9 @@
 use std::io;
 use std::sync::Arc;
 // This module depends on the term module and on the term writer module.
+use super::termfactory::TermFactory;
 use super::terms::*;
 use super::util::TermWriter;
-use super::termfactory::TermFactory;
 use std::ops::Deref;
 use util::escape;
 
@@ -51,10 +51,12 @@ impl TermWriter for EliWriter {
             // Print a symbol literal.  If this is a known root type, just print it.
             // If the name is the same as a known root type, then print the type.
             // Otherwise only print the type if it is not SYMBOL.
-            &Term::SymbolLiteral { ref typ, ref value, .. } => {
+            &Term::SymbolLiteral {
+                ref typ, ref value, ..
+            } => {
                 // A symbol literal might denote a known term, or it might be a
                 // simple symbol.
-                let (mut escaped,modified) = escape(value, '`');
+                let (mut escaped, modified) = escape(value, '`');
                 if modified {
                     escaped = format!("`{}`", escaped);
                 }
@@ -78,10 +80,12 @@ impl TermWriter for EliWriter {
                         Ok(())
                     }
                 }
-            },
+            }
 
-            &Term::StringLiteral { ref typ, ref value, .. } => {
-                let (escaped,_) = escape(value, '"');
+            &Term::StringLiteral {
+                ref typ, ref value, ..
+            } => {
+                let (escaped, _) = escape(value, '"');
                 write!(dest, "\"{}\"", escaped).unwrap();
                 if typ.deref() != fact.get_string().deref() {
                     try!(write!(dest, ": "));
@@ -89,9 +93,11 @@ impl TermWriter for EliWriter {
                 } else {
                     Ok(())
                 }
-            },
+            }
 
-            &Term::BooleanLiteral { ref typ, ref value, .. } => {
+            &Term::BooleanLiteral {
+                ref typ, ref value, ..
+            } => {
                 write!(dest, "{:?}", value).unwrap();
                 if typ.deref() != fact.get_boolean().deref() {
                     try!(write!(dest, ": "));
@@ -99,10 +105,15 @@ impl TermWriter for EliWriter {
                 } else {
                     Ok(())
                 }
-            },
+            }
 
-            &Term::Variable { ref typ, ref name, ref guard, .. } => {
-                let (escaped,modified) = escape(name, '`');
+            &Term::Variable {
+                ref typ,
+                ref name,
+                ref guard,
+                ..
+            } => {
+                let (escaped, modified) = escape(name, '`');
                 if modified {
                     try!(write!(dest, "$`{}`", escaped));
                 } else {
@@ -128,21 +139,32 @@ impl TermWriter for EliWriter {
                 } else {
                     Ok(())
                 }
-            },
+            }
 
-            &Term::StaticMap { ref domain, ref codomain, .. } => {
+            &Term::StaticMap {
+                ref domain,
+                ref codomain,
+                ..
+            } => {
                 try!(self.write(dest, fact, domain));
                 try!(write!(dest, " => "));
                 self.write(dest, fact, codomain)
-            },
+            }
 
-            &Term::StaticProduct { ref lhs, ref rhs, .. } => {
+            &Term::StaticProduct {
+                ref lhs, ref rhs, ..
+            } => {
                 try!(self.write(dest, fact, lhs));
                 try!(write!(dest, " * "));
                 self.write(dest, fact, rhs)
-            },
+            }
 
-            &Term::Lambda { ref param, ref body, ref guard, .. } => {
+            &Term::Lambda {
+                ref param,
+                ref body,
+                ref guard,
+                ..
+            } => {
                 try!(self.write(dest, fact, param));
                 try!(write!(dest, " ->"));
                 match guard.deref() {
@@ -161,7 +183,7 @@ impl TermWriter for EliWriter {
                 }
                 try!(write!(dest, " "));
                 self.write(dest, fact, body)
-            },
+            }
         }
     }
 }
