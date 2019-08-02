@@ -19,6 +19,8 @@
 
 use std::env;
 
+extern crate dirs;
+
 /// Get the name of the platform for which this version of relision was
 /// compiled.
 pub fn get_platform() -> &'static str {
@@ -73,7 +75,7 @@ pub fn get_platform() -> &'static str {
 ///   * `$HOME/.config/relision`
 pub fn get_config_dir() -> String {
     if cfg!(target_os = "macos") {
-        match env::home_dir() {
+        match dirs::home_dir() {
             Some(value) => {
                 let mut result = value;
                 result.push("Library");
@@ -112,7 +114,7 @@ pub fn get_config_dir() -> String {
             }
             None => {}
         };
-        match env::home_dir() {
+        match dirs::home_dir() {
             Some(value) => {
                 let mut result = value;
                 result.push("AppData");
@@ -142,7 +144,7 @@ pub fn get_config_dir() -> String {
             }
             None => {}
         };
-        match env::home_dir() {
+        match dirs::home_dir() {
             Some(value) => {
                 let mut result = value;
                 result.push(".config");

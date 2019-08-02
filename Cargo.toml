@@ -20,12 +20,10 @@ The relision term rewriter.
 	getopts = "*"
 	# We need lazy static data.
 	lazy_static = "~0.1.15"
+	# Get the dirs library to get access to directories.
+	dirs = "*"
 
 [lib]
 	name = "relision"
+	path = "src/lib.rs"
 
-[[bin]]
-	# Build the REPL.
-	name = "repl"
-	path = "src/main.rs"
-	doc = false

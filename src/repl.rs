@@ -68,6 +68,51 @@ pub fn define_commands() -> Vec<ColonCommand> {
              }),
          },
          ColonCommand {
+             name: "test",
+             action: Box::new(|_| -> CallbackResult {
+                // Go and get the locus stuff.
+                use terms::Locus;
+                let locus1 = Locus::Internal;
+                let locus2 = Locus::Console(9, 21);
+                let locus3 = Locus::File("brenda.eli".to_string(), 9, 21);
+                let locus4 = Locus::File("brenda.eli".to_string(), 9, 21);
+                println!("locus1: {}\nlocus2: {}\nlocus3: {}\nlocus4: {}\n", locus1, locus2, locus3, locus4);
+                println!("{} == {} -> {}", locus3, locus4, locus3 == locus4);
+                println!("{} == {} -> {}", locus2, locus3, locus2 == locus3);
+
+                // use std::sync::Arc;
+                // use relision::terms::Term;
+                use terms::TermFactory;
+                use terms::{TermWriter, EliWriter};
+                let fact = TermFactory::new();
+                let eli = EliWriter::new();
+                let t = fact.get_root();
+                println!("{}\n    {:?}", t, t);
+                let u = fact.new_string(Locus::Internal, "Mister \nPickles".to_string());
+                println!("{}\n    {:?}", u, u);
+                let v = fact.new_variable(Locus::Internal, &fact.get_any(), "viv\0ian".to_string(),
+                    &fact.new_boolean(true));
+                println!("{}\n    {:?}", v, v);
+                let m = fact.new_static_map(Locus::Internal, &v, &u);
+                println!("{}\n    {:?}", m, m);
+                let p = fact.new_static_product(Locus::Internal, &fact.get_string(), &fact.get_symbol());
+                println!("{}\n    {:?}", p, p);
+                let l = fact.new_lambda(Locus::Internal, &v, &m, &fact.new_boolean(true));
+                println!("{}\n    {:?}", l, l);
+                println!("{}\n    {:?}", fact.get_type(&l), fact.get_type(&l));
+                println!("");
+
+                // Now print using the ELI formatter.
+                let testy = fact.new_string(Locus::Internal, "|\u{a}\u{d}|\0|\t|\n|\r|\"|\'|?|\\|`|".to_string());
+                eli.println(&fact, &u);
+                eli.println(&fact, &testy);
+                eli.println(&fact, &l);
+
+                // If we get here assume all went well.
+                Ok("".to_string())
+             }),
+         },
+         ColonCommand {
              // This command is special.  It is trapped by the main loop and
              // causes the REPL to terminate.
              name: "quit",
