@@ -12,6 +12,7 @@
 
 Relision is a term rewriting library and REPL.  Relision is being developed in [Rust][rust].  The project uses [Semantic Versioning][semantic-version], and is released under the two-clause BSD license (see the License section below).
 
+> **NOTE**: Development of Relision has restarted with a different design, has also moved elsewhere (at least for now), and is **restricted** until it hits version 1.0.0.  If you are interested in contributing to Relision, visit the Relision [home page](https://relision.stacyprowell.com).
 
 ## Acknowledgements
 
